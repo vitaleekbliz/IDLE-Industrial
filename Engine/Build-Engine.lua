@@ -10,8 +10,13 @@ project "Engine"
    includedirs
    {
       "Source",
+
+      --Boost
+      "../Vendor/Boost/include",
+
       -- SDL3 Core
       "../Vendor/SDL3/SDL3-3.4.0/include",
+
       -- SDL3 Extensions
       "../Vendor/SDL3/SDL3_image-3.4.0/include",
       "../Vendor/SDL3/SDL3_mixer-3.2.0/include",
@@ -42,17 +47,20 @@ project "Engine"
        defines { }
 
    filter "configurations:Debug"
+       libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "DEBUG" }
        runtime "Debug"
        symbols "On"
 
    filter "configurations:Release"
+       libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "RELEASE" }
        runtime "Release"
        optimize "On"
        symbols "On"
 
    filter "configurations:Dist"
+       libdirs { "../Vendor/Boost/libs/Release" }
        defines { "DIST" }
        runtime "Release"
        optimize "On"
