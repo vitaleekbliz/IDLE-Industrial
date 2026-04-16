@@ -11,6 +11,9 @@ project "App"
    {
       "Source",
 
+      --Boost
+      "../Vendor/Boost/include",
+
 	  -- Include Engine
 	  "../Engine/Source"
    }
@@ -31,15 +34,18 @@ project "App"
        defines { "DEBUG" }
        runtime "Debug"
        symbols "On"
+       libdirs { "../Vendor/Boost/libs/Debug" }
 
    filter "configurations:Release"
        defines { "RELEASE" }
        runtime "Release"
        optimize "On"
        symbols "On"
+       libdirs { "../Vendor/Boost/libs/Debug" }
 
    filter "configurations:Dist"
        defines { "DIST" }
        runtime "Release"
        optimize "On"
        symbols "Off"
+       libdirs { "../Vendor/Boost/libs/Release" }

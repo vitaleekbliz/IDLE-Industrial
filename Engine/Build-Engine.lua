@@ -10,8 +10,13 @@ project "Engine"
    includedirs
    {
       "Source",
+
+      --Boost
+      "../Vendor/Boost/include",
+
       -- SDL3 Core
       "../Vendor/SDL3/SDL3-3.4.0/include",
+
       -- SDL3 Extensions
       "../Vendor/SDL3/SDL3_image-3.4.0/include",
       "../Vendor/SDL3/SDL3_mixer-3.2.0/include",
@@ -26,13 +31,13 @@ project "Engine"
       "../Vendor/SDL3/SDL3_ttf-3.2.2/lib/x64"
    }
 
-      -- Libraries to link against
-   links { 
-      "SDL3", 
-      "SDL3_image", 
-      "SDL3_ttf", 
-      "SDL3_mixer" 
-   }
+   --    -- Libraries to link against
+   -- links { 
+   --    "SDL3", 
+   --    "SDL3_image", 
+   --    "SDL3_ttf", 
+   --    "SDL3_mixer" 
+   -- }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
@@ -45,15 +50,18 @@ project "Engine"
        defines { "DEBUG" }
        runtime "Debug"
        symbols "On"
+       libdirs { "../Vendor/Boost/libs/Debug" }
 
    filter "configurations:Release"
        defines { "RELEASE" }
        runtime "Release"
        optimize "On"
        symbols "On"
+       libdirs { "../Vendor/Boost/libs/Debug" }
 
    filter "configurations:Dist"
        defines { "DIST" }
        runtime "Release"
        optimize "On"
        symbols "Off"
+       libdirs { "../Vendor/Boost/libs/Release" }
