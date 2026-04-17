@@ -76,7 +76,7 @@ namespace LOG
 		sLogConsole(level, message, timeStamp);
 		sLogFile(level, message, timeStamp, fileName);
 
-		if (level == Level::None || level == Level::Fatal)
+		if (level == Level::Fatal)
 		{
 			std::cout << "FATAL ERROR. Terminating..." << std::endl;
 			std::abort();
