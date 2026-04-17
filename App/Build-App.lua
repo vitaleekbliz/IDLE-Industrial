@@ -5,6 +5,10 @@ project "App"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
+   --Precompiled headers
+   pchheader "pchApp.h"
+   pchsource "Source/pchApp.cpp"
+
    files { "Source/**.h", "Source/**.cpp" }
 
    includedirs
@@ -12,7 +16,7 @@ project "App"
       "Source",
 
       --Boost
-      "../Vendor/Boost/include",
+      --"../Vendor/Boost/include",
 
 	  -- Include Engine
 	  "../Engine/Source"
@@ -31,20 +35,20 @@ project "App"
        defines { "WINDOWS" }
 
    filter "configurations:Debug"
-       libdirs { "../Vendor/Boost/libs/Debug" }
+       --libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "DEBUG" }
        runtime "Debug"
        symbols "On"
 
    filter "configurations:Release"
-       libdirs { "../Vendor/Boost/libs/Debug" }
+       --libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "RELEASE" }
        runtime "Release"
        optimize "On"
        symbols "On"
 
    filter "configurations:Dist"
-       libdirs { "../Vendor/Boost/libs/Release" }
+       --libdirs { "../Vendor/Boost/libs/Release" }
        defines { "DIST" }
        runtime "Release"
        optimize "On"

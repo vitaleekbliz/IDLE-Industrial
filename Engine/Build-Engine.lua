@@ -5,6 +5,10 @@ project "Engine"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
+   --Precompiled headers
+   pchheader "pchEng.h"
+   pchsource "Source/pchEng.cpp"
+
    files { "Source/**.h", "Source/**.cpp" }
 
    includedirs
@@ -12,7 +16,7 @@ project "Engine"
       "Source",
 
       --Boost
-      "../Vendor/Boost/include",
+      --"../Vendor/Boost/include",
 
       -- SDL3 Core
       "../Vendor/SDL3/SDL3-3.4.0/include",
@@ -47,20 +51,20 @@ project "Engine"
        defines { }
 
    filter "configurations:Debug"
-       libdirs { "../Vendor/Boost/libs/Debug" }
+       --libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "DEBUG" }
        runtime "Debug"
        symbols "On"
 
    filter "configurations:Release"
-       libdirs { "../Vendor/Boost/libs/Debug" }
+       --libdirs { "../Vendor/Boost/libs/Debug" }
        defines { "RELEASE" }
        runtime "Release"
        optimize "On"
        symbols "On"
 
    filter "configurations:Dist"
-       libdirs { "../Vendor/Boost/libs/Release" }
+       --libdirs { "../Vendor/Boost/libs/Release" }
        defines { "DIST" }
        runtime "Release"
        optimize "On"

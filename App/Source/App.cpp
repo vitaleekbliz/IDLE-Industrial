@@ -1,7 +1,8 @@
-#include "Core/Core.h"
-#include "boost/wave/wave_config.hpp"
+#include "pchApp.h"
+#include "BitEngine.h"
 
 int main()
 {
-	Engine::PrintHelloWorld();
+	Engine::BitEngine::Get().Init();
+	Engine::BitEngine::Get().Close();
 }
