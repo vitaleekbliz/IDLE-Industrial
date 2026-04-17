@@ -1,8 +1,8 @@
 #include "pchApp.h"
-#include "BitEngine.h"
+#include "Game.h"
 
 int main()
 {
-	Engine::BitEngine::Get().Init();
-	Engine::BitEngine::Get().Close();
+	Game game;
+	game.Run();
 }
