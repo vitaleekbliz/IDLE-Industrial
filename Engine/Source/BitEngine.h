@@ -37,6 +37,9 @@ namespace Engine
 		bool PollEvents();
 		void HandleTicks();
 
+		void CreateWindow(const char* title, Resolution resolution);
+		bool PollEvents();
+
 	private:
 		void ResizeWindow(Resolution resolution);
 		SDL_Window* m_Window = nullptr;
