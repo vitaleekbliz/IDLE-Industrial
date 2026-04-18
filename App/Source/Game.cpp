@@ -4,19 +4,20 @@
 
 Game::Game()
 {
-	Engine::BitEngine::Get().CreateWindow("IDLE Industrial", Engine::Resolution::FullHD);
+	m_Engine.CreateWindow("IDLE Industrial", Engine::Resolution::FullHD);
+	m_Engine.SetFPS(Engine::FPS::Unlim);
 }
 
 Game::~Game()
 {
-	Engine::BitEngine::Get().Close();
 }
 
 void Game::Run()
 {
 	while (m_Running)
 	{
-		m_Running = Engine::BitEngine::Get().PollEvents();
-		std::this_thread::sleep_for(std::chrono::milliseconds(15));
+		m_Engine.HandleTicks();
+
+		m_Running = m_Engine.PollEvents();
 	}
 }

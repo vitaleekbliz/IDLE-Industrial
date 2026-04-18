@@ -10,5 +10,6 @@ public:
 	void Run();
 
 private:
+	Engine::BitEngine m_Engine;
 	bool m_Running = true;
 };
