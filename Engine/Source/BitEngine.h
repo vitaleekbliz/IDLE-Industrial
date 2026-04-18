@@ -16,19 +16,28 @@ namespace Engine
 		_4K
 	};
 
+	enum class FPS : uint8_t
+	{
+		Unlim = 0,
+		f30 = 30,
+		f60 = 60,
+		f120 = 120,
+		f144 = 144
+	};
+
 	class BitEngine
 	{
 	public:
-		static BitEngine& Get();
-		void Close();
-
-		void CreateWindow(const char* title, Resolution resolution);
-		bool PollEvents();
-
-	private:
 		BitEngine();
 		~BitEngine();
 
+		void CreateWindow(const char* title, Resolution resolution);
+		void SetFPS(FPS fps);
+		inline float GetDeltaTime();
+		bool PollEvents();
+		void HandleTicks();
+
+	private:
 		void ResizeWindow(Resolution resolution);
 		SDL_Window* m_Window = nullptr;
 		SDL_Renderer* m_Renderer = nullptr;

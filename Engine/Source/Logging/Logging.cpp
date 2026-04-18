@@ -7,7 +7,6 @@ namespace LOG
 	static std::ofstream s_LogFile;
 
 	static const std::unordered_map<Level, const char*> s_Colors = {
-		{ Level::None, "\033[0m" },		// default
 		{ Level::Trace, "\033[0;90m" }, // Gray
 		{ Level::Info, "\033[1;32m" },	// Bold Green
 		{ Level::Warn, "\033[1;33m" },	// Bold Yellow
@@ -25,15 +24,16 @@ namespace LOG
 
 	static inline void sLogConsole(Level level, std::string_view message, const std::string& timeStamp)
 	{
-		if (level < CONSOLE_LOG_LEVEL)
+		if ((int)level < CONSOLE_LOG_LEVEL)
 			return;
 
-		std::cout << s_Colors.at(level) << "[" << timeStamp << "] " << s_Prefix.at(level) << message << s_Colors.at(Level::None) << std::endl;
+		//"\033[0m" resets color
+		std::cout << s_Colors.at(level) << "[" << timeStamp << "] " << s_Prefix.at(level) << message << "\033[0m" << std::endl;
 	}
 
 	static inline void sLogFile(Level level, std::string_view message, const std::string& timeStamp, const std::string& fileName)
 	{
-		if (level < FILE_LOG_LEVEL)
+		if ((int)level < FILE_LOG_LEVEL)
 			return;
 
 		if (s_FileName.empty())
@@ -60,11 +60,8 @@ namespace LOG
 		}
 	}
 
-	void Message(Level level, std::string_view message)
+	void Message(Level level, const std::string& message)
 	{
-		if (level == Level::None)
-			return;
-
 		auto miliSeconds = std::chrono::current_zone()->to_local(std::chrono::system_clock::now());
 
 		auto seconds = std::chrono::floor<std::chrono::seconds>(miliSeconds);
