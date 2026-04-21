@@ -1,6 +1,5 @@
 #pragma once
-#include <stdint.h>
-#include <cstdarg>
+#include <cstdint>
 
 // Assert
 #if defined(DEBUG) || defined(RELEASE)
@@ -8,7 +7,7 @@
 		if (!x)       \
 			__debugbreak();
 #else // DIST
-	#define Assert(x) ((void)0)
+	#define Assert(x)
 #endif
 
 namespace LOG

@@ -1,21 +1,11 @@
 #pragma once
 #include "cstdint"
-
-// namespace std
-//{
-//	template <>
-//	struct hash<Engine::SpriteSheet>
-//	{
-//		size_t operator()(const Engine::SpriteSheet& sheet) const
-//		{
-//			sheet.GetHash();
-//		}
-//	};
-// } // namespace std
+#include "Textures/Texture.h"
+#include "Textures/Sprite.h"
+#include <unordered_map>
 
 struct SDL_Window;
 struct SDL_Renderer;
-// typedef uint64_t SDL_TexturePointer;
 
 namespace Engine
 {
@@ -38,6 +28,8 @@ namespace Engine
 		f144 = 144
 	};
 
+	class SpriteSheet;
+
 	class BitEngine
 	{
 	public:
@@ -46,17 +38,26 @@ namespace Engine
 
 		void CreateWindow(const char* title, Resolution resolution);
 		void SetFPS(FPS fps);
-		inline float GetDeltaTime();
+
+		const float GetDeltaTime() const { return m_DeltaTime; }
 		bool PollEvents();
 		void HandleTicks();
 
-		void CreateWindow(const char* title, Resolution resolution);
-		bool PollEvents();
+		// called to clear renderer at the start of the frame
+		void ClearFrame();
+		void RenderSprite(Sprite sprite, const SpriteSheet* spriteSheet, int x, int y);
+		void RenderFrame();
 
 	private:
 		void ResizeWindow(Resolution resolution);
 		SDL_Window* m_Window = nullptr;
 		SDL_Renderer* m_Renderer = nullptr;
-		// std::unordered_map<SpriteSheet, SDL_TexturePointer> m_SpriteSheets;
+		std::unordered_map<const SpriteSheet*, Texture> m_Textures;
+
+		uint64_t m_TicksPerFrame = 0;
+		float m_DeltaTime = 0.f;
+		// from SDL (resolution of the clock)
+		uint64_t m_Frequecy = 0;
+		uint64_t m_PrevTick = 0;
 	};
 } // namespace Engine

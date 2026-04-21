@@ -1,15 +1,22 @@
 #pragma once
 #include "BitEngine.h"
+#include "Textures/SpriteSheet.h"
+#include <memory>
 
-class Application
+namespace Game
 {
-public:
-	Application();
-	~Application();
+	class Application
+	{
+	public:
+		Application();
+		~Application();
 
-	void Run();
+		void Run();
 
-private:
-	Engine::BitEngine m_Engine;
-	bool m_Running = true;
-};
+	private:
+		Engine::BitEngine m_Engine;
+		std::shared_ptr<Engine::SpriteSheet> m_SpriteSheet;
+
+		bool m_Running = true;
+	};
+} // namespace Game

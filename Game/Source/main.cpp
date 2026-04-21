@@ -3,6 +3,6 @@
 
 int main()
 {
-	Application app;
+	Game::Application app;
 	app.Run();
 }

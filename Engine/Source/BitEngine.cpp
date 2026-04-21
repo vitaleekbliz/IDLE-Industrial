@@ -22,11 +22,17 @@ namespace Engine
 		{
 			LOG_FATAL("Failed TTF_Init");
 		}
+
+		m_Frequecy = SDL_GetPerformanceFrequency();
+		m_PrevTick = SDL_GetPerformanceCounter();
 	}
 
 	BitEngine::~BitEngine()
 	{
 		LOG_TRACE("Deconstucting BitEngine");
+
+		SDL_DestroyRenderer(m_Renderer);
+		SDL_DestroyWindow(m_Window);
 	}
 
 	// return false if requested closing of the window
@@ -40,56 +46,71 @@ namespace Engine
 				case SDL_EVENT_QUIT:
 				case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 					return 0;
+				case SDL_EVENT_WINDOW_RESIZED:
+					m_PrevTick = SDL_GetPerformanceCounter();
+					break;
 			}
 		}
 
 		return true;
 	}
 
-#pragma region FPS
-	static uint64_t s_MaxDeltaTicks = 0;
-	static float s_DeltaTime = 0.f;
-	static uint64_t s_Frequecy = SDL_GetPerformanceFrequency();
+#pragma region Rendering
+	void BitEngine::RenderSprite(Sprite sprite, const SpriteSheet* spriteSheet, int x, int y)
+	{
+		if (!m_Textures.contains(spriteSheet))
+		{
+			m_Textures.emplace(spriteSheet, Texture(m_Renderer, spriteSheet));
+		}
 
+		SDL_FRect source((float)(sprite.X * sprite.Size), (float)(sprite.Y * sprite.Size), (float)sprite.Size, (float)sprite.Size);
+		SDL_FRect destination((float)x * sprite.Size, (float)y * sprite.Size, (float)sprite.Size, (float)sprite.Size);
+
+		SDL_RenderTexture(m_Renderer, m_Textures.at(spriteSheet).GetTexture(), &source, &destination);
+	}
+
+	void BitEngine::ClearFrame()
+	{
+		SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
+		SDL_RenderClear(m_Renderer);
+	}
+
+	void BitEngine::RenderFrame()
+	{
+		SDL_RenderPresent(m_Renderer);
+	}
+
+#pragma endregion
+
+#pragma region FPS
 	void BitEngine::SetFPS(FPS fps)
 	{
 		if (fps == FPS::Unlim)
 		{
-			s_MaxDeltaTicks = 0;
+			m_TicksPerFrame = 0;
 			LOG_INFO("Change FPS limit to Unlimited");
 			return;
 		}
 
-		s_MaxDeltaTicks = s_Frequecy / static_cast<uint64_t>(fps);
+		m_TicksPerFrame = m_Frequecy / static_cast<uint64_t>(fps);
 		LOG_INFO(std::format("Changed FPS limit to {}", (uint64_t)fps));
 	}
 
-	inline float BitEngine::GetDeltaTime()
-	{
-		return s_DeltaTime;
-	}
-
-	static float s_MaxDeltaTime = 1.f;
-
 	void BitEngine::HandleTicks()
 	{
-		static uint64_t prev = SDL_GetPerformanceCounter();
 		uint64_t now = SDL_GetPerformanceCounter();
-		uint64_t deltaTicks = now - prev;
-		if (deltaTicks < s_MaxDeltaTicks)
+		uint64_t deltaTicks = now - m_PrevTick;
+		if (deltaTicks < m_TicksPerFrame)
 		{
-			SDL_DelayNS(s_MaxDeltaTicks - deltaTicks);
-			deltaTicks = s_MaxDeltaTicks;
-			prev = SDL_GetPerformanceCounter();
+			SDL_DelayNS(m_TicksPerFrame - deltaTicks);
+			deltaTicks = m_TicksPerFrame;
+			m_PrevTick = SDL_GetPerformanceCounter();
 		}
 		else
 		{
-			prev = now;
+			m_PrevTick = now;
 		}
-		s_DeltaTime = (float)deltaTicks / s_Frequecy;
-
-		// TODO(VB) : clamping delta time to be max 1 second
-		s_DeltaTime = std::min(s_DeltaTime, s_MaxDeltaTime);
+		m_DeltaTime = (float)deltaTicks / m_Frequecy;
 	}
 
 #pragma endregion

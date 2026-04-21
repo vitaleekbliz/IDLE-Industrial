@@ -9,7 +9,7 @@ project "Game"
    pchheader "pchGame.h"
    pchsource "Source/pchGame.cpp"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp" } 
 
    includedirs
    {
@@ -29,6 +29,7 @@ project "Game"
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+   debugdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
 
    filter "system:windows"
       -- standard shell commands are often more reliable.

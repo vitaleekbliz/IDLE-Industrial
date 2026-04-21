@@ -22,6 +22,8 @@ group "Configuration"
       kind "None"
       files { ".clang-format", ".gitignore", "README.md", "**.lua", }
       vpaths { ["Solution Items/*"] = { "*" } }
+      targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
+      objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 group ""
 
    
