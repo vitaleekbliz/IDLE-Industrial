@@ -1,11 +1,11 @@
 #pragma once
 #include "BitEngine.h"
 
-class Game
+class Application
 {
 public:
-	Game();
-	~Game();
+	Application();
+	~Application();
 
 	void Run();
 

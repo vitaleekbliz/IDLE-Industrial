@@ -1,24 +1,23 @@
 #include "pchEng.h"
 #include "BitEngine.h"
 #include "Logging/Logging.h"
+#include "Textures/SpriteSheet.h"
 
 namespace Engine
 {
 
 	BitEngine::BitEngine()
 	{
-		LOG_TRACE("Creating BitEngine");
+		LOG_TRACE("Constructing BitEngine");
 
 		if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 		{
 			LOG_FATAL("Failed SDL_INIT");
 		}
-
 		if (!MIX_Init())
 		{
 			LOG_FATAL("Failed MIX_Init");
 		}
-
 		if (!TTF_Init())
 		{
 			LOG_FATAL("Failed TTF_Init");
@@ -27,7 +26,7 @@ namespace Engine
 
 	BitEngine::~BitEngine()
 	{
-		LOG_TRACE("Closing BitEngine");
+		LOG_TRACE("Deconstucting BitEngine");
 	}
 
 	// return false if requested closing of the window
@@ -48,7 +47,7 @@ namespace Engine
 	}
 
 #pragma region FPS
-	static uint64_t s_TickDuration = 0;
+	static uint64_t s_MaxDeltaTicks = 0;
 	static float s_DeltaTime = 0.f;
 	static uint64_t s_Frequecy = SDL_GetPerformanceFrequency();
 
@@ -56,13 +55,13 @@ namespace Engine
 	{
 		if (fps == FPS::Unlim)
 		{
-			s_TickDuration = 0;
+			s_MaxDeltaTicks = 0;
+			LOG_INFO("Change FPS limit to Unlimited");
 			return;
 		}
 
-		s_TickDuration = s_Frequecy / static_cast<uint64_t>(fps);
-
-		LOG_INFO(std::format("Changed FPS to {}", (uint64_t)fps));
+		s_MaxDeltaTicks = s_Frequecy / static_cast<uint64_t>(fps);
+		LOG_INFO(std::format("Changed FPS limit to {}", (uint64_t)fps));
 	}
 
 	inline float BitEngine::GetDeltaTime()
@@ -70,27 +69,29 @@ namespace Engine
 		return s_DeltaTime;
 	}
 
+	static float s_MaxDeltaTime = 1.f;
+
 	void BitEngine::HandleTicks()
 	{
 		static uint64_t prev = SDL_GetPerformanceCounter();
-
 		uint64_t now = SDL_GetPerformanceCounter();
-
 		uint64_t deltaTicks = now - prev;
-
-		if (deltaTicks < s_TickDuration)
+		if (deltaTicks < s_MaxDeltaTicks)
 		{
-			std::this_thread::sleep_for(std::chrono::microseconds(s_TickDuration - deltaTicks));
-			deltaTicks = s_TickDuration;
+			SDL_DelayNS(s_MaxDeltaTicks - deltaTicks);
+			deltaTicks = s_MaxDeltaTicks;
 			prev = SDL_GetPerformanceCounter();
 		}
 		else
 		{
 			prev = now;
 		}
-
 		s_DeltaTime = (float)deltaTicks / s_Frequecy;
+
+		// TODO(VB) : clamping delta time to be max 1 second
+		s_DeltaTime = std::min(s_DeltaTime, s_MaxDeltaTime);
 	}
+
 #pragma endregion
 
 #pragma region Window
@@ -112,12 +113,14 @@ namespace Engine
 	{
 		WindowSize size = s_ScreenPresets.at(resolution);
 		SDL_CreateWindowAndRenderer(title, size.w, size.h, NULL, &m_Window, &m_Renderer);
+		LOG_INFO(std::format("Created window and renderer, res : {}x{}", size.w, size.h));
 	}
 
 	void BitEngine::ResizeWindow(Resolution resolution)
 	{
 		WindowSize size = s_ScreenPresets.at(resolution);
 		SDL_SetWindowSize(m_Window, size.w, size.h);
+		LOG_INFO(std::format("Set resolution to {}x{}", size.w, size.h));
 	}
 #pragma endregion
 

@@ -1,8 +1,21 @@
 #pragma once
-#include "stdint.h"
+#include "cstdint"
+
+// namespace std
+//{
+//	template <>
+//	struct hash<Engine::SpriteSheet>
+//	{
+//		size_t operator()(const Engine::SpriteSheet& sheet) const
+//		{
+//			sheet.GetHash();
+//		}
+//	};
+// } // namespace std
 
 struct SDL_Window;
 struct SDL_Renderer;
+// typedef uint64_t SDL_TexturePointer;
 
 namespace Engine
 {
@@ -44,5 +57,6 @@ namespace Engine
 		void ResizeWindow(Resolution resolution);
 		SDL_Window* m_Window = nullptr;
 		SDL_Renderer* m_Renderer = nullptr;
+		// std::unordered_map<SpriteSheet, SDL_TexturePointer> m_SpriteSheets;
 	};
 } // namespace Engine

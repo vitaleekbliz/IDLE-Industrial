@@ -22,7 +22,7 @@ namespace LOG
 		Fatal
 	};
 
-	void Message(Level level, const std::string& message);
+	void Message(Level level, std::string message);
 
 } // namespace LOG
 

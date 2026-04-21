@@ -60,7 +60,7 @@ namespace LOG
 		}
 	}
 
-	void Message(Level level, const std::string& message)
+	void Message(Level level, std::string message)
 	{
 		auto miliSeconds = std::chrono::current_zone()->to_local(std::chrono::system_clock::now());
 
